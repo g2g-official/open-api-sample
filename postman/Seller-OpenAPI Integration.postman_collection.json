@@ -1,0 +1,624 @@
+{
+	"info": {
+		"_postman_id": "d87d6efe-ae50-4ec5-9090-7e6d513caadf",
+		"name": "Seller-OpenAPI Integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12000481"
+	},
+	"item": [
+		{
+			"name": "Get Services",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var http_status = 200;",
+							"",
+							"pm.test(\"Status code is \" + http_status, function () {",
+							"    pm.response.to.have.status(http_status);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"for (var i = 0; i < jsonData.payload.service_list.length; i++) {",
+							"    if (jsonData.payload.service_list[i].service_name == \"Direct top up\") {",
+							"        pm.collectionVariables.set(\"service_id\", jsonData.payload.service_list[i].service_id);",
+							"",
+							"        for (var j = 0; j < jsonData.payload.service_list[i].categories.length; j++) {",
+							"            if (jsonData.payload.service_list[i].categories[j].category_name == \"Direct Top Up\") {",
+							"                pm.collectionVariables.set(\"category_id\", jsonData.payload.service_list[i].categories[j].category_id);",
+							"                break;",
+							"            }",
+							"        }",
+							"        break;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/{{api_version}}/services",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"{{api_version}}",
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Brands",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var http_status = 200;",
+							"",
+							"pm.test(\"Status code is \" + http_status, function () {",
+							"    pm.response.to.have.status(http_status);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"for (var i = 0; i < jsonData.payload.brand_list.length; i++) {",
+							"    if (jsonData.payload.brand_list[i].brand_name == \"Ragnarok X: Next Generation\") {",
+							"        pm.collectionVariables.set(\"brand_id\", jsonData.payload.brand_list[i].brand_id);",
+							"        break;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/{{api_version}}/services/{{service_id}}/brands",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"{{api_version}}",
+						"services",
+						"{{service_id}}",
+						"brands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var http_status = 200;",
+							"",
+							"pm.test(\"Status code is \" + http_status, function () {",
+							"    pm.response.to.have.status(http_status);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"for (var i = 0; i < jsonData.payload.product_list.length; i++) {",
+							"    if (jsonData.payload.product_list[i].region_name == \"global\") {",
+							"        pm.collectionVariables.set(\"product_id\", jsonData.payload.product_list[i].product_id);",
+							"        break;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/{{api_version}}/products?category_id={{category_id}}&brand_id={{brand_id}}&service_id={{service_id}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"{{api_version}}",
+						"products"
+					],
+					"query": [
+						{
+							"key": "category_id",
+							"value": "{{category_id}}"
+						},
+						{
+							"key": "brand_id",
+							"value": "{{brand_id}}"
+						},
+						{
+							"key": "service_id",
+							"value": "{{service_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Attributes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var http_status = 200;",
+							"",
+							"pm.test(\"Status code is \" + http_status, function () {",
+							"    pm.response.to.have.status(http_status);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"for (var i = 0; i < jsonData.payload.attribute_group_list.length; i++) {",
+							"    pm.collectionVariables.set(\"attribute_group_id\", jsonData.payload.attribute_group_list[i].attribute_group_id);",
+							"",
+							"    for (var j = 0; j < jsonData.payload.attribute_group_list[i].attribute_list.length; j++) {",
+							"        // Create offer with 9780 Diamonds",
+							"        if (jsonData.payload.attribute_group_list[i].attribute_list[j].attribute_name == \"9780 Diamonds\") {",
+							"            pm.collectionVariables.set(\"attribute_id\", jsonData.payload.attribute_group_list[i].attribute_list[j].attribute_id);",
+							"            break;",
+							"        }",
+							"    }",
+							"}",
+							"",
+							"for (var i = 0; i < jsonData.payload.delivery_method_list.length; i++) {",
+							"    if (jsonData.payload.delivery_method_list[i].delivery_code == \"direct_top_up\") {",
+							"        pm.collectionVariables.set(\"delivery_method_id\", jsonData.payload.delivery_method_list[i].delivery_method_id);",
+							"        break;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/{{api_version}}/products/{{product_id}}/attributes",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"{{api_version}}",
+						"products",
+						"{{product_id}}",
+						"attributes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View Store Settings",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var http_status = 200;",
+							"var wholesale_tier_1_unit_price = parseFloat(pm.collectionVariables.get(\"unit_price\") * 97/100).toFixed(2);",
+							"var other_wholesale_tier_1_unit_price = parseFloat(pm.collectionVariables.get(\"other_pricing_unit_price_1\") * 97/100).toFixed(2);",
+							"var wholesale_tier_2_unit_price = parseFloat(pm.collectionVariables.get(\"unit_price\") * 90/100).toFixed(2);",
+							"var other_wholesale_tier_2_unit_price = parseFloat(pm.collectionVariables.get(\"other_pricing_unit_price_1\") * 90/100).toFixed(2);",
+							"",
+							"pm.test(\"Status code is \" + http_status, function () {",
+							"    pm.response.to.have.status(http_status);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"if (jsonData.payload.selling_currencies.includes(\"USD\")) {",
+							"    pm.collectionVariables.set(\"currency\", \"USD\");",
+							"    // Discount 3%",
+							"    pm.collectionVariables.set(\"wholesale_tier_1_unit_price\", parseFloat(wholesale_tier_1_unit_price));",
+							"    // Discount 10%",
+							"    pm.collectionVariables.set(\"wholesale_tier_2_unit_price\", parseFloat(wholesale_tier_2_unit_price));",
+							"}",
+							"",
+							"if (jsonData.payload.selling_currencies.includes(\"EUR\")) {",
+							"    pm.collectionVariables.set(\"other_pricing_currency_1\", \"EUR\");",
+							"    // Discount 3%",
+							"    pm.collectionVariables.set(\"other_wholesale_tier_1_unit_price\", parseFloat(other_wholesale_tier_1_unit_price));",
+							"    // Discount 10%",
+							"    pm.collectionVariables.set(\"other_wholesale_tier_2_unit_price\", parseFloat(other_wholesale_tier_2_unit_price));",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/{{api_version}}/store",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"{{api_version}}",
+						"store"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Offer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var http_status = 200;",
+							"",
+							"pm.test(\"Status code is \" + http_status, function () {",
+							"    pm.response.to.have.status(http_status);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"offer_id\", jsonData.payload.offer_id);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"product_id\": \"{{product_id}}\",\n    \"offer_attributes\": [\n        {\n            \"attribute_group_id\": \"{{attribute_group_id}}\",\n            \"attribute_id\": \"{{attribute_id}}\"\n        }\n    ],\n    \"currency\": \"{{currency}}\",\n    \"unit_price\": {{unit_price}},\n    \"other_pricing\": [\n        {\n            \"currency\": \"{{other_pricing_currency_1}}\",\n            \"unit_price\": {{other_pricing_unit_price_1}}\n        }\n    ],\n    \"min_qty\": 1,\n    \"api_qty\": 100,\n    \"low_stock_alert_qty\": 10,\n    \"wholesale_details\": [\n        {\n            \"min\": 10,\n            \"max\": 20,\n            \"unit_price\": {{wholesale_tier_1_unit_price}}\n        },\n        {\n            \"min\": 21,\n            \"max\": 1000,\n            \"unit_price\": {{wholesale_tier_2_unit_price}}\n        }\n    ],\n    \"other_wholesale_details\": [\n        {\n            \"wholesale_details\": [\n                {\n                    \"min\": 10,\n                    \"max\": 20,\n                    \"unit_price\": {{other_wholesale_tier_1_unit_price}}\n                },\n                {\n                    \"min\": 21,\n                    \"max\": 1000,\n                    \"unit_price\": {{other_wholesale_tier_2_unit_price}}\n                }\n            ],\n            \"currency\": \"{{other_pricing_currency_1}}\"\n        }\n    ],\n    \"sales_territory_settings\": {\n        \"settings_type\": \"global\",\n        \"countries\": []\n    },\n    \"delivery_method_ids\": [\n        \"{{delivery_method_id}}\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/{{api_version}}/offers",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"{{api_version}}",
+						"offers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Offer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var http_status = 200;",
+							"",
+							"pm.test(\"Status code is \" + http_status, function () {",
+							"    pm.response.to.have.status(http_status);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"api_qty\": 1000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/{{api_version}}/offers/{{offer_id}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"{{api_version}}",
+						"offers",
+						"{{offer_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Offer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var http_status = 200;",
+							"",
+							"pm.test(\"Status code is \" + http_status, function () {",
+							"    pm.response.to.have.status(http_status);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/{{api_version}}/offers/{{offer_id}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"{{api_version}}",
+						"offers",
+						"{{offer_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Offer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var http_status = 200;",
+							"",
+							"pm.test(\"Status code is \" + http_status, function () {",
+							"    pm.response.to.have.status(http_status);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/{{api_version}}/offers/{{offer_id}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"{{api_version}}",
+						"offers",
+						"{{offer_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const api_key = pm.collectionVariables.get(\"api_key\");",
+					"const secret_key = pm.collectionVariables.get(\"api_secret\");",
+					"const user_id = pm.collectionVariables.get(\"api_user\");",
+					"const timestamp = Date.now();",
+					"",
+					"let url_path = pm.collectionVariables.replaceIn(pm.request.url.getPath());",
+					"console.log(url_path);",
+					"",
+					"let canonical_string = url_path + api_key + user_id + String(timestamp);",
+					"console.log(canonical_string);",
+					"",
+					"var CryptoJS = require(\"crypto-js\");",
+					"const hmac = CryptoJS.HmacSHA256(canonical_string, secret_key);",
+					"console.log(String(hmac));",
+					"",
+					"pm.request.headers.upsert({",
+					"    key: \"g2g-api-key\",",
+					"    value: api_key",
+					"});",
+					"pm.request.headers.upsert({",
+					"    key: \"g2g-userid\",",
+					"    value: user_id",
+					"});",
+					"pm.request.headers.upsert({",
+					"    key: \"g2g-signature\",",
+					"    value: String(hmac)",
+					"});",
+					"pm.request.headers.upsert({",
+					"    key: \"g2g-timestamp\",",
+					"    value: timestamp",
+					"});",
+					"pm.request.headers.upsert({",
+					"    key: \"Content-Type\",",
+					"    value: \"application/json\"",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api_key",
+			"value": "<your_api_key>",
+			"type": "string"
+		},
+		{
+			"key": "api_secret",
+			"value": "<your_api_secret>",
+			"type": "string"
+		},
+		{
+			"key": "api_user",
+			"value": "<your_user_id>",
+			"type": "string"
+		},
+		{
+			"key": "api_url",
+			"value": "https://open-api.g2g.com",
+			"type": "string"
+		},
+		{
+			"key": "api_version",
+			"value": "v2",
+			"type": "string"
+		},
+		{
+			"key": "service_id",
+			"value": ""
+		},
+		{
+			"key": "brand_id",
+			"value": ""
+		},
+		{
+			"key": "category_id",
+			"value": ""
+		},
+		{
+			"key": "product_id",
+			"value": ""
+		},
+		{
+			"key": "attribute_group_id",
+			"value": ""
+		},
+		{
+			"key": "attribute_id",
+			"value": ""
+		},
+		{
+			"key": "currency",
+			"value": ""
+		},
+		{
+			"key": "other_pricing_currency_1",
+			"value": ""
+		},
+		{
+			"key": "unit_price",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "other_pricing_unit_price_1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "wholesale_tier_1_unit_price",
+			"value": ""
+		},
+		{
+			"key": "wholesale_tier_2_unit_price",
+			"value": ""
+		},
+		{
+			"key": "other_wholesale_tier_1_unit_price",
+			"value": ""
+		},
+		{
+			"key": "other_wholesale_tier_2_unit_price",
+			"value": ""
+		},
+		{
+			"key": "delivery_method_id",
+			"value": ""
+		},
+		{
+			"key": "offer_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
